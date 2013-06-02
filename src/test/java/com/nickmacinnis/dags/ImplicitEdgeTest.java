@@ -2,29 +2,38 @@ package com.nickmacinnis.dags;
 
 import static org.junit.Assert.*;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Set;
 
 import org.junit.Test;
+
+import com.nickmacinnis.dags.example.DirectEdgeExampleImpl;
+import com.nickmacinnis.dags.example.EdgeExample;
+import com.nickmacinnis.dags.example.ImplicitEdgeExampleImpl;
+import com.nickmacinnis.dags.example.NodeExample;
 
 public class ImplicitEdgeTest {
 
     /**
      * Test method for {@link ImplicitEdge#attach()}.
-     * @throws GraphLogicException 
+     * @throws GraphLogicException
      */
     @Test
     public void testAttach()
             throws GraphLogicException {
-        NodeImpl m = new NodeImpl();
-        NodeImpl n = new NodeImpl();
-        NodeImpl o = new NodeImpl();
-        NodeImpl p = new NodeImpl();
+        NodeExample m = new NodeExample();
+        NodeExample n = new NodeExample();
+        NodeExample o = new NodeExample();
+        NodeExample p = new NodeExample();
 
-        DirectEdgeImpl e = new DirectEdgeImpl(m, n);
-        DirectEdgeImpl f = new DirectEdgeImpl(n, o);
-        DirectEdgeImpl g = new DirectEdgeImpl(o, p);
+        DirectEdgeExampleImpl e = new DirectEdgeExampleImpl(m, n);
+        DirectEdgeExampleImpl f = new DirectEdgeExampleImpl(n, o);
+        DirectEdgeExampleImpl g = new DirectEdgeExampleImpl(o, p);
 
-        ImplicitEdgeImpl h = new ImplicitEdgeImpl(m, p, e, f, g, 2);
+        ImplicitEdgeExampleImpl h = new ImplicitEdgeExampleImpl(m, p, e, f, g, 2);
 
         assertTrue(h.attach());
         assertTrue(m.getOutgoingEdges().contains(h));
@@ -48,22 +57,22 @@ public class ImplicitEdgeTest {
 
     /**
      * Test method for {@link ImplicitEdge#detach()}.
-     * @throws GraphLogicException 
+     * @throws GraphLogicException
      */
     @Test
     public void testDetach()
             throws GraphLogicException {
 
-        NodeImpl m = new NodeImpl();
-        NodeImpl n = new NodeImpl();
-        NodeImpl o = new NodeImpl();
-        NodeImpl p = new NodeImpl();
+        NodeExample m = new NodeExample();
+        NodeExample n = new NodeExample();
+        NodeExample o = new NodeExample();
+        NodeExample p = new NodeExample();
 
-        DirectEdgeImpl e = new DirectEdgeImpl(m, n);
-        DirectEdgeImpl f = new DirectEdgeImpl(n, o);
-        DirectEdgeImpl g = new DirectEdgeImpl(o, p);
+        DirectEdgeExampleImpl e = new DirectEdgeExampleImpl(m, n);
+        DirectEdgeExampleImpl f = new DirectEdgeExampleImpl(n, o);
+        DirectEdgeExampleImpl g = new DirectEdgeExampleImpl(o, p);
 
-        ImplicitEdgeImpl h = new ImplicitEdgeImpl(m, p, e, f, g, 2);
+        ImplicitEdgeExampleImpl h = new ImplicitEdgeExampleImpl(m, p, e, f, g, 2);
 
         h.attach();
         assertTrue(h.detach());
@@ -78,22 +87,22 @@ public class ImplicitEdgeTest {
 
     /**
      * Test method for {@link ImplicitEdge#detach()}.
-     * @throws GraphLogicException 
+     * @throws GraphLogicException
      */
     @Test
     public void testDetachImplicitEdges()
             throws GraphLogicException {
-        NodeImpl m = new NodeImpl();
-        NodeImpl n = new NodeImpl();
-        NodeImpl o = new NodeImpl();
-        NodeImpl p = new NodeImpl();
+        NodeExample m = new NodeExample();
+        NodeExample n = new NodeExample();
+        NodeExample o = new NodeExample();
+        NodeExample p = new NodeExample();
 
         m.addChild(n);
         o.addChild(p);
         n.addChild(o);
 
-        DirectEdgeImpl e = new DirectEdgeImpl(m, n);
-        DirectEdgeImpl g = new DirectEdgeImpl(o, p);
+        DirectEdgeExampleImpl e = new DirectEdgeExampleImpl(m, n);
+        DirectEdgeExampleImpl g = new DirectEdgeExampleImpl(o, p);
 
         assertTrue(n.removeChild(o));
 
@@ -116,21 +125,21 @@ public class ImplicitEdgeTest {
      */
     @Test
     public void testCollectAttachedEdgesWithImplicits() {
-        NodeImpl m = new NodeImpl();
-        NodeImpl n = new NodeImpl();
-        NodeImpl o = new NodeImpl();
-        NodeImpl p = new NodeImpl();
+        NodeExample m = new NodeExample();
+        NodeExample n = new NodeExample();
+        NodeExample o = new NodeExample();
+        NodeExample p = new NodeExample();
 
-        DirectEdgeImpl e = new DirectEdgeImpl(n, o);
-        ImplicitEdgeImpl f = new ImplicitEdgeImpl(m, n, null, null, null, 0);
-        ImplicitEdgeImpl g = new ImplicitEdgeImpl(n, p, null, null, null, 0);
-        ImplicitEdgeImpl h = new ImplicitEdgeImpl(m, p, null, null, null, 0);
+        DirectEdgeExampleImpl e = new DirectEdgeExampleImpl(n, o);
+        ImplicitEdgeExampleImpl f = new ImplicitEdgeExampleImpl(m, n, null, null, null, 0);
+        ImplicitEdgeExampleImpl g = new ImplicitEdgeExampleImpl(n, p, null, null, null, 0);
+        ImplicitEdgeExampleImpl h = new ImplicitEdgeExampleImpl(m, p, null, null, null, 0);
         e.incomingImplicitEdges.add(f);
         e.outgoingImplicitEdges.add(g);
         f.outgoingImplicitEdges.add(h);
         g.incomingImplicitEdges.add(h);
 
-        Set<EdgeImpl> collectedEdges = e.collectAttachedEdges();
+        Set<EdgeExample> collectedEdges = e.collectAttachedEdges();
 
         assertEquals(3, collectedEdges.size());
         assertTrue(collectedEdges.contains(f));

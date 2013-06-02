@@ -3,10 +3,11 @@ package com.nickmacinnis.dags;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.Set;
 
 /**
@@ -22,13 +23,49 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
         this.rootNode = rootNode;
     }
 
+    /**
+     * Adds the node as a child of the root node
+     * @return true if addition was successful
+     * @throws GraphLogicException
+     */
     public boolean addChild(N endNode)
             throws GraphLogicException {
         return rootNode.addChild(endNode);
     }
 
+    /**
+     * Removes the node from the root node's children
+     * @return true if removal was successful
+     */
     public boolean removeChild(N endNode) {
         return rootNode.removeChild(endNode);
+    }
+
+    /**
+     * Removes the node from the graph
+     * @param node - node to remove from the graph
+     */
+    public void removeNode(N node) {
+        Set<N> allNodes = collectChildren();
+        detachSingleNode(node);
+        Set<N> remainingNodes = collectChildren();
+        allNodes.removeAll(remainingNodes);
+        // "deorphanize"
+        for (N orphan : allNodes) {
+            detachSingleNode(orphan);
+        }
+    }
+
+    /**
+     * Clean up a single node by detaching all edges from it
+     */
+    private void detachSingleNode(N node) {
+        for(E edge : new LinkedHashSet<E>(node.getIncomingEdges())) {
+            edge.detach();
+        }
+        for(E edge : new LinkedHashSet<E>(node.getOutgoingEdges())) {
+            edge.detach();
+        }
     }
 
     /**
@@ -50,18 +87,31 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
         return rootNode.iterator();
     }
 
+    /**
+     * @return the unique set of all non-root nodes in the graph
+     */
     public Set<N> collectChildren() {
         return rootNode.collectChildren();
     }
 
+    /**
+     * @return the unique set of all direct edges in the graph
+     */
     public Set<E> collectDirectEdges() {
         return rootNode.collectDirectEdges();
     }
 
+    /**
+     * @return the unique set of all edges in the graph
+     */
     public Set<E> collectEdges() {
         return rootNode.collectEdges();
     }
 
+    /**
+     * Rearrange the graph to remove most unnecessary edge crossings, then
+     * generate coordinates for each node.
+     */
     public void calculateNodeCoordinates() {
         for (N node : rootNode.collectChildren()) {
             node.setY(node.calculateDepth());
@@ -82,6 +132,32 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
                 node.setX(oldX + (i - oldX) / occurrences);
             }
         }
+        Set<N> positionedNodes = new LinkedHashSet<N>();
+        //remove collisions
+        for (N node : rootNode.collectChildren()) {
+            N overlappingNode = findOverlappingNode(node, positionedNodes);
+            while (null != overlappingNode) {
+                node.setX(overlappingNode.getX() + 1);
+                overlappingNode = findOverlappingNode(node, positionedNodes);
+            }
+            positionedNodes.add(node);
+        }
+    }
+
+    /**
+     * Identify a node in the set of already positioned nodes which has the same
+     * Y coordinate as the candidate node and which has X coordinate within 1 of the
+     * candidate node.
+     * @return The first node found which overlaps, or null if none found
+     */
+    private N findOverlappingNode(N candidateNode, Set<N> positionedNodes) {
+        for (N positionedNode : positionedNodes) {
+            if(candidateNode.getY() == positionedNode.getY() &&
+                    Math.abs(candidateNode.getX() - positionedNode.getX()) < 1) {
+                return positionedNode;
+            }
+        }
+        return null;
     }
 
     /**
@@ -271,6 +347,9 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
         }
     }
 
+    /**
+     * @return this
+     */
     protected abstract DirectedAcyclicGraph<N, E> constructThis();
 
     @Override

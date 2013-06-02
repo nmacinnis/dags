@@ -10,7 +10,6 @@ import java.util.Set;
  * Represents a single node in the graph.
  * @author nmacinnis
  */
-
 public abstract class AbstractNode<N extends Node<N, E>, E extends Edge<N, E>> implements Iterable<N>, Node<N, E> {
     protected List<E> incomingEdges;
     protected List<E> outgoingEdges;
@@ -102,10 +101,19 @@ public abstract class AbstractNode<N extends Node<N, E>, E extends Edge<N, E>> i
         return true;
     }
 
+    /**
+     * @return this
+     */
     protected abstract N getThis();
 
+    /**
+     * @return A DirectEdge from startNode to endNode
+     */
     protected abstract E buildDirectEdge(N startNode, N endNode);
 
+    /**
+     * @return An ImplicitEdge from startNode to endNode
+     */
     protected abstract E buildImplicitEdge(N startNode, N endNode, E entryEdge, E directEdge, E exitEdge, int hops);
 
     /**
@@ -113,7 +121,7 @@ public abstract class AbstractNode<N extends Node<N, E>, E extends Edge<N, E>> i
      * The edge is added to the start and end nodes' collection of incoming/outgoing edges.
      * @param edge The edge to add.
      * @return True if the graph did not contain the edge.
-     * @throws GraphLogicException 
+     * @throws GraphLogicException
      */
     protected boolean addEdge(Edge<N, E> edge)
             throws GraphLogicException {
@@ -232,6 +240,12 @@ public abstract class AbstractNode<N extends Node<N, E>, E extends Edge<N, E>> i
         return outgoingEdges;
     }
 
+    /**
+     * Find the element in the list which matches the object
+     * @param matchingObject The object to be matched against
+     * @param list The list to search
+     * @return The object which equals matchingObject, or null
+     */
     private <T> T findActual(T matchingObject, List<? extends T> list) {
         T actual = null;
         for (T check : list) {
@@ -242,6 +256,7 @@ public abstract class AbstractNode<N extends Node<N, E>, E extends Edge<N, E>> i
         return actual;
     }
 
+    @Override
     public Iterator<N> iterator() {
         List<N> nodes = new ArrayList<N>();
         nodes.add(getThis());

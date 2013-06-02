@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.LinkedHashSet;
 
 /**
- * An edge joining two nodes. The edge has a direction, e.g. a start and end node. 
+ * An edge joining two nodes. The edge has a direction, e.g. a start and end node.
  * @author nmacinnis
  */
 public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> implements Edge<N, E> {
@@ -31,15 +31,20 @@ public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> i
         dependentImplicitEdges = new LinkedHashSet();
     }
 
+    /**
+     * @return this
+     */
     protected abstract E getThis();
 
     /**
      * @param Edge The edge which will be added to this edge's internal collection of incoming edges
      */
+    @Override
     public boolean attachIncomingEdge(E edge) {
         return incomingImplicitEdges.add(edge);
     }
 
+    @Override
     public boolean detachIncomingEdge(E edge) {
         return incomingImplicitEdges.remove(edge);
     }
@@ -47,42 +52,52 @@ public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> i
     /**
      * @param Edge The edge which will be added to this edge's internal collection of incoming edges
      */
+    @Override
     public boolean attachOutgoingEdge(E edge) {
         return outgoingImplicitEdges.add(edge);
     }
 
+    @Override
     public boolean detachOutgoingEdge(E edge) {
         return outgoingImplicitEdges.remove(edge);
     }
 
+    @Override
     public boolean attachDependentEdge(E edge) {
         return dependentImplicitEdges.add(edge);
     }
 
+    @Override
     public boolean detachDependentEdge(E edge) {
         return dependentImplicitEdges.remove(edge);
     }
 
+    @Override
     public N getStartNode() {
         return startNode;
     }
 
+    @Override
     public N getEndNode() {
         return endNode;
     }
 
+    @Override
     public E getEntryEdge() {
         return entryEdge;
     }
 
+    @Override
     public E getDirectEdge() {
         return directEdge;
     }
 
+    @Override
     public E getExitEdge() {
         return exitEdge;
     }
 
+    @Override
     public int getHops() {
         return hops;
     }
@@ -102,6 +117,7 @@ public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> i
     /**
      * @return The set of all edges which are attached to this edge directly or transitively through an implicit edge
      */
+    @Override
     public Set<E> collectAttachedEdges() {
         Set<E> collectedEdges = new LinkedHashSet();
         for (E incomingEdge : incomingImplicitEdges) {
@@ -122,6 +138,7 @@ public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> i
         return collectedEdges;
     }
 
+    @Override
     public boolean attach()
             throws GraphLogicException {
         if (startNode == null || endNode == null) {
@@ -132,6 +149,7 @@ public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> i
         return true;
     }
 
+    @Override
     public boolean detach() {
         if (startNode == null || endNode == null) {
             return false;
@@ -165,40 +183,54 @@ public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> i
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         AbstractEdge<?, ?> other = (AbstractEdge<?, ?>) obj;
         if (directEdge == null) {
-            if (other.directEdge != null)
+            if (other.directEdge != null) {
                 return false;
-        } else if (!directEdge.equals(other.directEdge))
+            }
+        } else if (!directEdge.equals(other.directEdge)) {
             return false;
+        }
         if (endNode == null) {
-            if (other.endNode != null)
+            if (other.endNode != null) {
                 return false;
-        } else if (!endNode.equals(other.endNode))
+            }
+        } else if (!endNode.equals(other.endNode)) {
             return false;
+        }
         if (entryEdge == null) {
-            if (other.entryEdge != null)
+            if (other.entryEdge != null) {
                 return false;
-        } else if (!entryEdge.equals(other.entryEdge))
+            }
+        } else if (!entryEdge.equals(other.entryEdge)) {
             return false;
+        }
         if (exitEdge == null) {
-            if (other.exitEdge != null)
+            if (other.exitEdge != null) {
                 return false;
-        } else if (!exitEdge.equals(other.exitEdge))
+            }
+        } else if (!exitEdge.equals(other.exitEdge)) {
             return false;
-        if (hops != other.hops)
+        }
+        if (hops != other.hops) {
             return false;
+        }
         if (startNode == null) {
-            if (other.startNode != null)
+            if (other.startNode != null) {
                 return false;
-        } else if (!startNode.equals(other.startNode))
+            }
+        } else if (!startNode.equals(other.startNode)) {
             return false;
+        }
         return true;
     }
 

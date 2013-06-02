@@ -57,17 +57,36 @@ public interface Node<N extends Node<N, E>, E extends Edge<N, E>> extends Iterab
 
     public List<E> getOutgoingEdges();
 
+    /**
+     * @param edge The edge which will be added to this node's internal collection of incoming edges
+     */
     public boolean addIncomingEdge(E edge)
             throws GraphLogicException;
 
+    /**
+     * @param edge The edge which will be removed from this node's internal collection of incoming edges
+     */
     public boolean removeIncomingEdge(E edge);
 
+    /**
+     * @param edge The edge which will be added to this node's internal collection of outgoing edges
+     */
     public boolean addOutgoingEdge(E edge);
 
+    /**
+     * @param edge The edge which will be removed from this node's internal collection of outgoing edges
+     */
     public boolean removeOutgoingEdge(E edge);
 
+    /**
+     * @return The number of hops from the root node of the graph to this node
+     */
     public int calculateDepth();
 
+    /**
+     * @return A two dimensional representation of this graph, having one row for each possible path
+     * from the root node to any leaf
+     */
     public List<List<N>> generateGrid();
 
     public double getX();
@@ -81,8 +100,15 @@ public interface Node<N extends Node<N, E>, E extends Edge<N, E>> extends Iterab
     public N clone()
             throws CloneNotSupportedException;
 
+    /**
+     * @return The unique set of all direct edges which are reachable in the outgoing direction
+     * from this node
+     */
     public Set<E> collectDirectEdges();
 
+    /**
+     * @return The list of all nodes which are reached from this node in a depth-first traversal
+     */
     public List<N> dft();
 
 }
