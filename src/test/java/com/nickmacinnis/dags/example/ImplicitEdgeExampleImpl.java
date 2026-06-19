@@ -8,9 +8,4 @@ public class ImplicitEdgeExampleImpl extends ImplicitEdge<NodeExample, EdgeExamp
         super(startNode, endNode, entryEdge, directEdge, exitEdge, hops);
     }
 
-    @Override
-    protected EdgeExample getThis() {
-        return this;
-    }
-
 }

@@ -8,9 +8,4 @@ public class DirectEdgeExampleImpl extends DirectEdge<NodeExample, EdgeExample> 
         super(startNode, endNode);
     }
 
-    @Override
-    protected EdgeExample getThis() {
-        return this;
-    }
-
 }
