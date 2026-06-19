@@ -3,7 +3,7 @@ package com.nickmacinnis.dags;
 /**
  * Thrown when something tries to violate some principle of the graph, such as creating cycles or edges to nowhere.
  */
-public class GraphLogicException extends Exception {
+public class GraphLogicException extends RuntimeException {
     @java.io.Serial
     private static final long serialVersionUID = 7969449737430643226L;
 
