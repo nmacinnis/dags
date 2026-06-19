@@ -1,5 +1,6 @@
 package com.nickmacinnis.dags;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -92,15 +93,15 @@ public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> i
     }
 
     public Set<E> getIncomingImplicitEdges() {
-        return incomingImplicitEdges;
+        return Collections.unmodifiableSet(incomingImplicitEdges);
     }
 
     public Set<E> getOutgoingImplicitEdges() {
-        return outgoingImplicitEdges;
+        return Collections.unmodifiableSet(outgoingImplicitEdges);
     }
 
     public Set<E> getDependentImplicitEdges() {
-        return dependentImplicitEdges;
+        return Collections.unmodifiableSet(dependentImplicitEdges);
     }
 
     /**
