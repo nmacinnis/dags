@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * A concrete edge joining two nodes. Number of hops is always zero.
  */
-public abstract class DirectEdge<N extends Node<N, E>, E extends Edge<N, E>> extends AbstractEdge<N, E> implements Edge<N, E> {
+public abstract non-sealed class DirectEdge<N extends Node<N, E>, E extends Edge<N, E>> extends AbstractEdge<N, E> {
 
     protected DirectEdge(N startNode, N endNode) {
         super(startNode, endNode, 0);

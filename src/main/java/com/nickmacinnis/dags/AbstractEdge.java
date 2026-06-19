@@ -8,7 +8,10 @@ import java.util.Set;
 /**
  * An edge joining two nodes. The edge has a direction, e.g. a start and end node.
  */
-public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> implements Edge<N, E> {
+public abstract sealed class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>>
+        implements Edge<N, E>
+        permits DirectEdge, ImplicitEdge {
+
     protected N startNode;
     protected N endNode;
     protected E entryEdge;
@@ -29,8 +32,15 @@ public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> i
         dependentImplicitEdges = new LinkedHashSet<>();
     }
 
-    /** @return this */
-    protected abstract E getThis();
+    /**
+     * Returns this edge typed as E.
+     * Safe by construction: the self-referential constraint (E extends Edge<N, E>) guarantees
+     * that any class extending AbstractEdge<N, E> is E.
+     */
+    @SuppressWarnings("unchecked")
+    protected E getThis() {
+        return (E) this;
+    }
 
     @Override
     public boolean attachIncomingEdge(E edge) {
@@ -104,9 +114,6 @@ public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> i
         return Collections.unmodifiableSet(dependentImplicitEdges);
     }
 
-    /**
-     * @return The set of all edges which are attached to this edge directly or transitively through an implicit edge
-     */
     @Override
     public Set<E> collectAttachedEdges() {
         Set<E> collectedEdges = new LinkedHashSet<>();
@@ -126,7 +133,7 @@ public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> i
     }
 
     @Override
-    public boolean attach() throws GraphLogicException {
+    public boolean attach() {
         if (startNode == null || endNode == null) {
             return false;
         }
@@ -142,13 +149,16 @@ public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> i
         }
         startNode.removeOutgoingEdge(getThis());
         endNode.removeIncomingEdge(getThis());
-        for (E edge : outgoingImplicitEdges) {
+        // Copy sets before iterating: detaching an implicit edge removes it from these
+        // sets via detachOutgoingEdge/detachIncomingEdge/detachDependentEdge, which would
+        // cause ConcurrentModificationException if we iterated the live sets directly.
+        for (E edge : new LinkedHashSet<>(outgoingImplicitEdges)) {
             edge.detach();
         }
-        for (E edge : incomingImplicitEdges) {
+        for (E edge : new LinkedHashSet<>(incomingImplicitEdges)) {
             edge.detach();
         }
-        for (E edge : dependentImplicitEdges) {
+        for (E edge : new LinkedHashSet<>(dependentImplicitEdges)) {
             edge.detach();
         }
         return true;

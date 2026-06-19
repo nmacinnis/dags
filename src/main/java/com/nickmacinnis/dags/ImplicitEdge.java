@@ -4,7 +4,7 @@ package com.nickmacinnis.dags;
  * A calculated edge joining a start and end node by way of one direct edge and one direct or implicit edge.
  * @author nmacinnis
  */
-public abstract class ImplicitEdge<N extends Node<N, E>, E extends Edge<N, E>> extends AbstractEdge<N, E> {
+public abstract non-sealed class ImplicitEdge<N extends Node<N, E>, E extends Edge<N, E>> extends AbstractEdge<N, E> {
     /**
      * @param startNode The start node
      * @param endNode The end node
@@ -21,8 +21,7 @@ public abstract class ImplicitEdge<N extends Node<N, E>, E extends Edge<N, E>> e
     }
 
     @Override
-    public boolean attach()
-            throws GraphLogicException {
+    public boolean attach() {
         entryEdge.attachOutgoingEdge(getThis());
         exitEdge.attachIncomingEdge(getThis());
         directEdge.attachDependentEdge(getThis());
