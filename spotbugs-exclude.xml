@@ -1,0 +1,48 @@
+<FindBugsFilter>
+  <!--
+    AbstractNode.getThis() and AbstractEdge.getThis() cast `this` to the type parameter N/E.
+    Safe by construction: the self-referential constraint guarantees any concrete subclass IS N or E.
+  -->
+  <Match>
+    <Class name="com.nickmacinnis.dags.AbstractNode"/>
+    <Method name="getThis"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+  <Match>
+    <Class name="com.nickmacinnis.dags.AbstractEdge"/>
+    <Method name="getThis"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <!--
+    Getters that expose internal mutable state are intentional API design for this graph library.
+    - getOutgoingEdges()/getIncomingEdges() return the live list so that untangle() can sort it in-place.
+    - getStartNode()/getEndNode() return the actual node references — graph traversal requires identity.
+    - DirectedAcyclicGraph stores the passed rootNode directly — the graph IS built around that node.
+  -->
+  <Match>
+    <Class name="com.nickmacinnis.dags.AbstractNode"/>
+    <Method name="getIncomingEdges"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+  <Match>
+    <Class name="com.nickmacinnis.dags.AbstractNode"/>
+    <Method name="getOutgoingEdges"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+  <Match>
+    <Class name="com.nickmacinnis.dags.AbstractEdge"/>
+    <Method name="getStartNode"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+  <Match>
+    <Class name="com.nickmacinnis.dags.AbstractEdge"/>
+    <Method name="getEndNode"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+  <Match>
+    <Class name="com.nickmacinnis.dags.DirectedAcyclicGraph"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+</FindBugsFilter>
