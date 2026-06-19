@@ -3,117 +3,80 @@ package com.nickmacinnis.dags;
 import java.util.List;
 import java.util.Set;
 
-public interface Node<N extends Node<N, E>, E extends Edge<N, E>> extends Iterable<N>, Cloneable {
+public interface Node<N extends Node<N, E>, E extends Edge<N, E>> extends Iterable<N> {
 
     /**
-     * Add the edge to the graph.
-     * If the edge's start node is null, the edge will be added to the root node.
-     * Implicit edges are added to the graph as necessary.
-     * @param edge The edge to be added.
-     * @return false if the graph already contained the edge; otherwise true.
-     * @throws GraphLogicException if the edge would create a cycle or if the end node is null.
+     * Add a direct edge from this node to endNode.
+     * Implicit (transitive) edges are generated automatically.
+     * @return false if the edge already existed; true otherwise
+     * @throws GraphLogicException if the edge would create a cycle or endNode is null
      */
-    public boolean addChild(N endNode)
-            throws GraphLogicException;
+    boolean addChild(N endNode);
 
     /**
-     * Add a direct edge to the graph.
-     * This works similarly to addChild.
-     * @param edge The edge
-     * @return false if the graph already contained the edge; otherwise true.
-     * @throws GraphLogicException if the edge would create a cycle or if the end node is null.
+     * Add a pre-built direct edge to the graph.
+     * @return false if the edge already existed; true otherwise
+     * @throws GraphLogicException if the edge would create a cycle or the end node is null
      */
-    boolean addDirectEdge(E edge)
-            throws GraphLogicException;
+    boolean addDirectEdge(E edge);
 
     /**
-     * Remove a child node. It is possible to orphan nodes by calling this method.
-     * @param endNode The child node to remove
-     * @return false if the node was not a child of this node; true otherwise.
+     * Remove the direct edge from this node to endNode.
+     * Dependent implicit edges are cascade-detached.
+     * @return false if no such edge existed; true otherwise
      */
-    public boolean removeChild(N endNode);
+    boolean removeChild(N endNode);
+
+    /** @return true if this node has no incoming edges */
+    boolean isOrphaned();
+
+    /** @return the set of all nodes reachable from this node (direct and transitive) */
+    Set<N> collectChildren();
+
+    /** @return the set of all edges reachable from this node (direct and implicit) */
+    Set<E> collectEdges();
+
+    /** @return the list of direct children in insertion order, with duplicates for shared nodes */
+    List<N> listChildren();
+
+    List<E> getIncomingEdges();
+
+    List<E> getOutgoingEdges();
+
+    boolean addIncomingEdge(E edge);
+
+    boolean removeIncomingEdge(E edge);
+
+    boolean addOutgoingEdge(E edge);
+
+    boolean removeOutgoingEdge(E edge);
+
+    /** @return the maximum hop count from any incoming edge (depth from root) */
+    int calculateDepth();
 
     /**
-     * @return true if this node has no incoming edges; otherwise false
+     * @return a 2D list where each row is one path from this node to a leaf,
+     *         suitable for coordinate layout
      */
-    public boolean isOrphaned();
+    List<List<N>> generateGrid();
 
-    /**
-     * @return The set of all nodes which can be reached directly or transitively via this node's outgoing edges
-     */
-    public Set<N> collectChildren();
+    double getX();
 
-    /**
-     * @return The set of all edges in the graph
-     */
-    public Set<E> collectEdges();
+    void setX(double x);
 
-    /**
-     * @return The list of all nodes which can be reached directly or transitively via this node's outgoing edges
-     */
-    public List<N> listChildren();
+    double getY();
 
-    public List<E> getIncomingEdges();
+    void setY(double y);
 
-    public List<E> getOutgoingEdges();
+    /** @return a new empty node of the same concrete type */
+    N copy();
 
-    /**
-     * @param edge The edge which will be added to this node's internal collection of incoming edges
-     */
-    public boolean addIncomingEdge(E edge)
-            throws GraphLogicException;
+    /** @return the set of all direct edges reachable from this node */
+    Set<E> collectDirectEdges();
 
-    /**
-     * @param edge The edge which will be removed from this node's internal collection of incoming edges
-     */
-    public boolean removeIncomingEdge(E edge);
+    /** @return nodes in depth-first order (direct edges only, duplicates possible) */
+    List<N> dft();
 
-    /**
-     * @param edge The edge which will be added to this node's internal collection of outgoing edges
-     */
-    public boolean addOutgoingEdge(E edge);
-
-    /**
-     * @param edge The edge which will be removed from this node's internal collection of outgoing edges
-     */
-    public boolean removeOutgoingEdge(E edge);
-
-    /**
-     * @return The number of hops from the root node of the graph to this node
-     */
-    public int calculateDepth();
-
-    /**
-     * @return A two dimensional representation of this graph, having one row for each possible path
-     * from the root node to any leaf
-     */
-    public List<List<N>> generateGrid();
-
-    public double getX();
-
-    public void setX(double x);
-
-    public double getY();
-
-    public void setY(double y);
-
-    public N clone()
-            throws CloneNotSupportedException;
-
-    /**
-     * @return The unique set of all direct edges which are reachable in the outgoing direction
-     * from this node
-     */
-    public Set<E> collectDirectEdges();
-
-    /**
-     * @return The list of all nodes which are reached from this node in a depth-first traversal
-     */
-    public List<N> dft();
-
-    /**
-     * @return The list of all nodes which are reached from this node in a breadth-first traversal
-     */
-    public List<N> bft();
-
+    /** @return nodes in breadth-first order (direct edges only, duplicates possible) */
+    List<N> bft();
 }

@@ -3,67 +3,41 @@ package com.nickmacinnis.dags;
 import java.util.Set;
 
 /**
- * An edge joining two nodes. The edge has a direction, e.g. a start and end node.
- * @author nmacinnis
+ * A directed edge joining two nodes.
  */
 public interface Edge<N extends Node<N, E>, E extends Edge<N, E>> {
-    public N getStartNode();
 
-    public N getEndNode();
+    N getStartNode();
 
-    public int getHops();
+    N getEndNode();
 
-    public E getEntryEdge();
+    /** @return 0 for direct edges; number of implied hops for implicit edges */
+    int getHops();
 
-    public E getDirectEdge();
+    E getEntryEdge();
 
-    public E getExitEdge();
+    E getDirectEdge();
 
-    /**
-     * @param Edge The edge which will be added to this edge's internal collection of incoming edges
-     */
-    public boolean attachIncomingEdge(E edge);
+    E getExitEdge();
 
-    /**
-     * @param Edge The edge which will be removed from this edge's internal collection of incoming edges
-     */
-    public boolean detachIncomingEdge(E edge);
+    boolean attachIncomingEdge(E edge);
 
-    /**
-     * @param Edge The edge which will be added to this edge's internal collection of incoming edges
-     */
-    public boolean attachOutgoingEdge(E edge);
+    boolean detachIncomingEdge(E edge);
 
-    /**
-     * @param Edge The edge which will be removed from this edge's internal collection of outgoing edges
-     */
-    public boolean detachOutgoingEdge(E edge);
+    boolean attachOutgoingEdge(E edge);
 
-    /**
-     * @param Edge The edge which will be added to this edge's internal collection of dependent edges
-     */
-    public boolean attachDependentEdge(E edge);
+    boolean detachOutgoingEdge(E edge);
 
-    /**
-     * @param Edge The edge which will be removed from this edge's internal collection of dependent edges
-     */
-    public boolean detachDependentEdge(E edge);
+    boolean attachDependentEdge(E edge);
 
-    /**
-     * @return The set of all edges which are attached to this edge directly or transitively through an implicit edge
-     */
-    public Set<E> collectAttachedEdges();
+    boolean detachDependentEdge(E edge);
 
-    /**
-     * Notify the edge's start and end nodes to attach this edge to their respective outgoing and incoming edges
-     */
-    public boolean attach()
-            throws GraphLogicException;
+    /** @return all implicit edges attached to this edge, directly or transitively */
+    Set<E> collectAttachedEdges();
 
-    /**
-     * Notify the edge's start and end nodes to remove this edge from their respective outgoing and incoming edges.
-     * Notify any implicit edges which are attached to this edge to detach themselves recursively.
-     */
-    public boolean detach();
+    /** Register this edge with its start and end nodes. */
+    boolean attach();
 
+    /** Unregister this edge and cascade-detach all dependent implicit edges. */
+    boolean detach();
 }
