@@ -12,9 +12,7 @@ import java.util.Set;
 
 /**
  * The root node of the graph, which has only outgoing edges.
- * The root node additionally tracks the contents of the graph
- * as a whole.
- * @author nmacinnis
+ * The root node additionally tracks the contents of the graph as a whole.
  */
 public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<N, E>> implements Iterable<N>, Cloneable {
     protected N rootNode;
@@ -24,17 +22,15 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
     }
 
     /**
-     * Adds the node as a child of the root node
+     * Adds the node as a child of the root node.
      * @return true if addition was successful
-     * @throws GraphLogicException
      */
-    public boolean addChild(N endNode)
-            throws GraphLogicException {
+    public boolean addChild(N endNode) throws GraphLogicException {
         return rootNode.addChild(endNode);
     }
 
     /**
-     * Removes the node from the root node's children
+     * Removes the node from the root node's children.
      * @return true if removal was successful
      */
     public boolean removeChild(N endNode) {
@@ -42,8 +38,7 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
     }
 
     /**
-     * Removes the node from the graph
-     * @param node - node to remove from the graph
+     * Removes the node from the graph, cleaning up any nodes that become unreachable.
      */
     public void removeNode(N node) {
         Set<N> allNodes = collectChildren();
@@ -60,24 +55,20 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
      * Clean up a single node by detaching all edges from it
      */
     private void detachSingleNode(N node) {
-        for(E edge : new LinkedHashSet<E>(node.getIncomingEdges())) {
+        for (E edge : new LinkedHashSet<>(node.getIncomingEdges())) {
             edge.detach();
         }
-        for(E edge : new LinkedHashSet<E>(node.getOutgoingEdges())) {
+        for (E edge : new LinkedHashSet<>(node.getOutgoingEdges())) {
             edge.detach();
         }
     }
 
-    /**
-     * @return number of nodes in the graph
-     */
+    /** @return number of nodes in the graph */
     public int getNodeCount() {
         return rootNode.collectChildren().size() + 1;
     }
 
-    /**
-     * @return number of direct edges in the graph
-     */
+    /** @return number of edges in the graph */
     public int getEdgeCount() {
         return rootNode.collectEdges().size();
     }
@@ -87,23 +78,17 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
         return rootNode.iterator();
     }
 
-    /**
-     * @return the unique set of all non-root nodes in the graph
-     */
+    /** @return the unique set of all non-root nodes in the graph */
     public Set<N> collectChildren() {
         return rootNode.collectChildren();
     }
 
-    /**
-     * @return the unique set of all direct edges in the graph
-     */
+    /** @return the unique set of all direct edges in the graph */
     public Set<E> collectDirectEdges() {
         return rootNode.collectDirectEdges();
     }
 
-    /**
-     * @return the unique set of all edges in the graph
-     */
+    /** @return the unique set of all edges in the graph */
     public Set<E> collectEdges() {
         return rootNode.collectEdges();
     }
@@ -118,7 +103,7 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
         }
         untangle();
         List<List<N>> rootGrid = rootNode.generateGrid();
-        Map<N, Integer> nodeOccurrences = new HashMap<N, Integer>();
+        Map<N, Integer> nodeOccurrences = new HashMap<>();
         for (int i = 0; i < rootGrid.size(); i++) {
             List<N> row = rootGrid.get(i);
             for (int j = 0; j < row.size(); j++) {
@@ -132,11 +117,11 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
                 node.setX(oldX + (i - oldX) / occurrences);
             }
         }
-        Set<N> positionedNodes = new LinkedHashSet<N>();
+        Set<N> positionedNodes = new LinkedHashSet<>();
         //remove collisions
         for (N node : rootNode.collectChildren()) {
             N overlappingNode = findOverlappingNode(node, positionedNodes);
-            while (null != overlappingNode) {
+            while (overlappingNode != null) {
                 node.setX(overlappingNode.getX() + 1);
                 overlappingNode = findOverlappingNode(node, positionedNodes);
             }
@@ -152,7 +137,7 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
      */
     private N findOverlappingNode(N candidateNode, Set<N> positionedNodes) {
         for (N positionedNode : positionedNodes) {
-            if(candidateNode.getY() == positionedNode.getY() &&
+            if (candidateNode.getY() == positionedNode.getY() &&
                     Math.abs(candidateNode.getX() - positionedNode.getX()) < 1) {
                 return positionedNode;
             }
@@ -168,76 +153,69 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
      * A child node _c with parents _a and _b will fall after a node having only parent _a and before a node having only parent _b.
      */
     protected void untangle() {
-        List<N> initialList = new ArrayList<N>();
-        final Map<N, List<N>> nodeParents = new HashMap<N, List<N>>();
-        final Map<N, List<N>> nodeChildren = new HashMap<N, List<N>>();
+        List<N> initialList = new ArrayList<>();
+        final Map<N, List<N>> nodeParents = new HashMap<>();
+        final Map<N, List<N>> nodeChildren = new HashMap<>();
         initialList.add(rootNode);
-        for (N node : rootNode.collectChildren()) {
-            initialList.add(node);
-        }
+        initialList.addAll(rootNode.collectChildren());
 
         for (N node : initialList) {
-            List<N> parents = new ArrayList<N>();
+            List<N> parents = new ArrayList<>();
             for (E edge : node.getIncomingEdges()) {
-                if (edge instanceof DirectEdge) {
+                if (edge instanceof DirectEdge<?, ?>) {
                     parents.add(edge.getStartNode());
                 }
             }
             nodeParents.put(node, parents);
-            List<N> children = new ArrayList<N>();
+            List<N> children = new ArrayList<>();
             for (E edge : node.getOutgoingEdges()) {
-                if (edge instanceof DirectEdge) {
+                if (edge instanceof DirectEdge<?, ?>) {
                     children.add(edge.getEndNode());
                 }
             }
             nodeChildren.put(node, children);
         }
 
-        final List<N> firstPassSortedNodes = new ArrayList<N>();
+        final List<N> firstPassSortedNodes = new ArrayList<>();
 
-        final Comparator<N> firstPassComparator = new Comparator<N>() {
-            @Override
-            public int compare(N n1, N n2) {
-                List<N> n1Parents = nodeParents.get(n1);
-                for (N parent : n1Parents) {
-                    if (!firstPassSortedNodes.contains(parent)) {
-                        return 1;
-                    }
+        final Comparator<N> firstPassComparator = (n1, n2) -> {
+            List<N> n1Parents = nodeParents.get(n1);
+            for (N parent : n1Parents) {
+                if (!firstPassSortedNodes.contains(parent)) {
+                    return 1;
                 }
-                List<N> n2Parents = nodeParents.get(n2);
-                for (N parent : n2Parents) {
-                    if (!firstPassSortedNodes.contains(parent)) {
-                        return -1;
-                    }
-                }
-                int n1UnmarkedParents = n1Parents.size();
-                int n2UnmarkedParents = n2Parents.size();
-                for (int i = firstPassSortedNodes.size(); i > 0; i--) {
-                    N recentNode = firstPassSortedNodes.get(i - 1);
-                    boolean n1HasMostRecentNode = n1Parents.contains(recentNode);
-                    if (n1HasMostRecentNode) {
-                        n1UnmarkedParents--;
-                    }
-                    boolean n2HasMostRecentNode = n2Parents.contains(recentNode);
-                    if (n2HasMostRecentNode) {
-                        n2UnmarkedParents--;
-                    }
-                    if (n1HasMostRecentNode && !n2HasMostRecentNode) {
-                        return 1;
-                    } else if (n2HasMostRecentNode && !n1HasMostRecentNode) {
-                        return -1;
-                    } else if (n1UnmarkedParents == 0 && n2UnmarkedParents == 0) {
-                        return 0;
-                    } else if (n1UnmarkedParents == 0 && n2UnmarkedParents != 0) {
-                        return 1;
-                    } else if (n2UnmarkedParents == 0 && n1UnmarkedParents != 0) {
-                        return -1;
-                    }
-                }
-
-                return 0;
             }
-
+            List<N> n2Parents = nodeParents.get(n2);
+            for (N parent : n2Parents) {
+                if (!firstPassSortedNodes.contains(parent)) {
+                    return -1;
+                }
+            }
+            int n1UnmarkedParents = n1Parents.size();
+            int n2UnmarkedParents = n2Parents.size();
+            for (int i = firstPassSortedNodes.size(); i > 0; i--) {
+                N recentNode = firstPassSortedNodes.get(i - 1);
+                boolean n1HasMostRecentNode = n1Parents.contains(recentNode);
+                if (n1HasMostRecentNode) {
+                    n1UnmarkedParents--;
+                }
+                boolean n2HasMostRecentNode = n2Parents.contains(recentNode);
+                if (n2HasMostRecentNode) {
+                    n2UnmarkedParents--;
+                }
+                if (n1HasMostRecentNode && !n2HasMostRecentNode) {
+                    return 1;
+                } else if (n2HasMostRecentNode && !n1HasMostRecentNode) {
+                    return -1;
+                } else if (n1UnmarkedParents == 0 && n2UnmarkedParents == 0) {
+                    return 0;
+                } else if (n1UnmarkedParents == 0) {
+                    return 1;
+                } else if (n2UnmarkedParents == 0) {
+                    return -1;
+                }
+            }
+            return 0;
         };
 
         while (!initialList.isEmpty()) {
@@ -246,52 +224,49 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
             initialList.remove(nextNode);
         }
         Collections.reverse(firstPassSortedNodes);
-        final List<N> secondPassSortedNodes = new ArrayList<N>();
 
-        Comparator<N> secondPassComparator = new Comparator<N>() {
-            @Override
-            public int compare(N n1, N n2) {
-                List<N> n1Children = nodeChildren.get(n1);
-                for (N child : n1Children) {
-                    if (!secondPassSortedNodes.contains(child)) {
-                        return 1;
-                    }
-                }
-                List<N> n2Children = nodeChildren.get(n2);
-                for (N child : n2Children) {
-                    if (!secondPassSortedNodes.contains(child)) {
-                        return -1;
-                    }
-                }
-                int n1UnmarkedChildren = n1Children.size();
-                int n2UnmarkedChildren = n2Children.size();
-                for (int i = secondPassSortedNodes.size(); i > 0; i--) {
-                    N recentNode = secondPassSortedNodes.get(i - 1);
-                    boolean n1HasMostRecentNode = n1Children.contains(recentNode);
-                    if (n1HasMostRecentNode) {
-                        n1UnmarkedChildren--;
-                    }
-                    boolean n2HasMostRecentNode = n2Children.contains(recentNode);
-                    if (n2HasMostRecentNode) {
-                        n2UnmarkedChildren--;
-                    }
-                    if (n1HasMostRecentNode && !n2HasMostRecentNode) {
-                        return 1;
-                    } else if (n2HasMostRecentNode && !n1HasMostRecentNode) {
-                        return -1;
-                    } else if (n1UnmarkedChildren == 0 && n2UnmarkedChildren == 0) {
-                        return 0;
-                    } else if (n1UnmarkedChildren == 0 && n2UnmarkedChildren != 0) {
-                        return 1;
-                    } else if (n2UnmarkedChildren == 0 && n1UnmarkedChildren != 0) {
-                        return -1;
-                    }
-                }
+        final List<N> secondPassSortedNodes = new ArrayList<>();
 
-                return 0;
+        Comparator<N> secondPassComparator = (n1, n2) -> {
+            List<N> n1Children = nodeChildren.get(n1);
+            for (N child : n1Children) {
+                if (!secondPassSortedNodes.contains(child)) {
+                    return 1;
+                }
             }
-
+            List<N> n2Children = nodeChildren.get(n2);
+            for (N child : n2Children) {
+                if (!secondPassSortedNodes.contains(child)) {
+                    return -1;
+                }
+            }
+            int n1UnmarkedChildren = n1Children.size();
+            int n2UnmarkedChildren = n2Children.size();
+            for (int i = secondPassSortedNodes.size(); i > 0; i--) {
+                N recentNode = secondPassSortedNodes.get(i - 1);
+                boolean n1HasMostRecentNode = n1Children.contains(recentNode);
+                if (n1HasMostRecentNode) {
+                    n1UnmarkedChildren--;
+                }
+                boolean n2HasMostRecentNode = n2Children.contains(recentNode);
+                if (n2HasMostRecentNode) {
+                    n2UnmarkedChildren--;
+                }
+                if (n1HasMostRecentNode && !n2HasMostRecentNode) {
+                    return 1;
+                } else if (n2HasMostRecentNode && !n1HasMostRecentNode) {
+                    return -1;
+                } else if (n1UnmarkedChildren == 0 && n2UnmarkedChildren == 0) {
+                    return 0;
+                } else if (n1UnmarkedChildren == 0) {
+                    return 1;
+                } else if (n2UnmarkedChildren == 0) {
+                    return -1;
+                }
+            }
+            return 0;
         };
+
         while (!firstPassSortedNodes.isEmpty()) {
             N nextNode = Collections.min(firstPassSortedNodes, secondPassComparator);
             secondPassSortedNodes.add(nextNode);
@@ -301,13 +276,10 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
 
         //now each node sorts its edges in the order of the nodes in this list
 
-        Comparator<E> outgoingEdgeComparator = new Comparator<E>() {
-            @Override
-            public int compare(E o1, E o2) {
-                Integer o1Index = secondPassSortedNodes.indexOf(o1.getEndNode());
-                Integer o2Index = secondPassSortedNodes.indexOf(o2.getEndNode());
-                return o1Index.compareTo(o2Index);
-            }
+        Comparator<E> outgoingEdgeComparator = (o1, o2) -> {
+            Integer o1Index = secondPassSortedNodes.indexOf(o1.getEndNode());
+            Integer o2Index = secondPassSortedNodes.indexOf(o2.getEndNode());
+            return o1Index.compareTo(o2Index);
         };
 
         for (N node : this) {
@@ -316,7 +288,7 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
 
         //now finally regenerate the node ordering based on traversal so that pass-through edges
         // won't distort everything.
-        final List<N> nodesOrderedByTraversal = new ArrayList<N>();
+        final List<N> nodesOrderedByTraversal = new ArrayList<>();
         for (N node : rootNode.dft()) {
             if (!nodesOrderedByTraversal.contains(node)) {
                 nodesOrderedByTraversal.add(node);
@@ -324,47 +296,39 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
         }
 
         //and reorder all the edges according to this list
-        Comparator<E> incomingEdgeComparator = new Comparator<E>() {
-            @Override
-            public int compare(E o1, E o2) {
-                Integer o1Index = nodesOrderedByTraversal.indexOf(o1.getStartNode());
-                Integer o2Index = nodesOrderedByTraversal.indexOf(o2.getStartNode());
-                return o1Index.compareTo(o2Index);
-            }
+        Comparator<E> incomingEdgeComparator = (o1, o2) -> {
+            Integer o1Index = nodesOrderedByTraversal.indexOf(o1.getStartNode());
+            Integer o2Index = nodesOrderedByTraversal.indexOf(o2.getStartNode());
+            return o1Index.compareTo(o2Index);
         };
 
-        outgoingEdgeComparator = new Comparator<E>() {
-            @Override
-            public int compare(E o1, E o2) {
-                Integer o1Index = nodesOrderedByTraversal.indexOf(o1.getEndNode());
-                Integer o2Index = nodesOrderedByTraversal.indexOf(o2.getEndNode());
-                return o1Index.compareTo(o2Index);
-            }
+        outgoingEdgeComparator = (o1, o2) -> {
+            Integer o1Index = nodesOrderedByTraversal.indexOf(o1.getEndNode());
+            Integer o2Index = nodesOrderedByTraversal.indexOf(o2.getEndNode());
+            return o1Index.compareTo(o2Index);
         };
+
         for (N node : this) {
             Collections.sort(node.getIncomingEdges(), incomingEdgeComparator);
             Collections.sort(node.getOutgoingEdges(), outgoingEdgeComparator);
         }
     }
 
-    /**
-     * @return this
-     */
+    /** @return this */
     protected abstract DirectedAcyclicGraph<N, E> constructThis();
 
     @Override
-    public DirectedAcyclicGraph<N, E> clone()
-            throws CloneNotSupportedException {
+    public DirectedAcyclicGraph<N, E> clone() throws CloneNotSupportedException {
         DirectedAcyclicGraph<N, E> clone = constructThis();
         Set<N> nodes = collectChildren();
-        Map<N, N> clonedNodes = new HashMap<N, N>();
+        Map<N, N> clonedNodes = new HashMap<>();
         clonedNodes.put(rootNode, clone.rootNode);
         for (N node : nodes) {
             clonedNodes.put(node, node.clone());
         }
         Set<E> edges = collectEdges();
         for (E edge : edges) {
-            if (edge instanceof DirectEdge) {
+            if (edge instanceof DirectEdge<?, ?>) {
                 N startNode = clonedNodes.get(edge.getStartNode());
                 N endNode = clonedNodes.get(edge.getEndNode());
                 try {
@@ -373,10 +337,7 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
                     // doubtful
                 }
             }
-
         }
-
         return clone;
     }
-
 }
