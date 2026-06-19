@@ -1,9 +1,11 @@
 package com.nickmacinnis.dags;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 /**
@@ -272,6 +274,23 @@ public abstract class AbstractNode<N extends Node<N, E>, E extends Edge<N, E>> i
             tree.add(row);
         }
         return tree;
+    }
+
+    @Override
+    public List<N> bft() {
+        List<N> result = new ArrayList<>();
+        Queue<N> queue = new ArrayDeque<>();
+        queue.add(getThis());
+        while (!queue.isEmpty()) {
+            N current = queue.poll();
+            result.add(current);
+            for (E edge : current.getOutgoingEdges()) {
+                if (edge instanceof DirectEdge<?, ?>) {
+                    queue.add(edge.getEndNode());
+                }
+            }
+        }
+        return result;
     }
 
     @Override

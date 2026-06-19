@@ -111,4 +111,9 @@ public interface Node<N extends Node<N, E>, E extends Edge<N, E>> extends Iterab
      */
     public List<N> dft();
 
+    /**
+     * @return The list of all nodes which are reached from this node in a breadth-first traversal
+     */
+    public List<N> bft();
+
 }

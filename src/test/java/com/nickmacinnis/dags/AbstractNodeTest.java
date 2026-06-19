@@ -370,6 +370,26 @@ public class AbstractNodeTest {
     }
 
     @Test
+    public void testBft() throws GraphLogicException {
+        NodeExample m = new NodeExample();
+        NodeExample n = new NodeExample();
+        NodeExample o = new NodeExample();
+        NodeExample p = new NodeExample();
+
+        m.addChild(n);
+        m.addChild(o);
+        n.addChild(p);
+
+        List<NodeExample> result = m.bft();
+        // BFS level order: m, then n and o (level 1), then p (level 2)
+        assertEquals(4, result.size());
+        assertEquals(m, result.get(0));
+        assertEquals(n, result.get(1));
+        assertEquals(o, result.get(2));
+        assertEquals(p, result.get(3));
+    }
+
+    @Test
     public void testCollectDirectEdges() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
