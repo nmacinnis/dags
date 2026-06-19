@@ -1,12 +1,12 @@
 package com.nickmacinnis.dags;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.nickmacinnis.dags.example.DirectEdgeExampleImpl;
 import com.nickmacinnis.dags.example.EdgeExample;
@@ -15,9 +15,6 @@ import com.nickmacinnis.dags.example.NodeExample;
 
 public class DirectEdgeTest {
 
-    /**
-     * Test method for {@link Edge#collectAttachedEdges()}.
-     */
     @Test
     public void testCollectAttachedEdges() {
         NodeExample m = new NodeExample();
@@ -28,13 +25,8 @@ public class DirectEdgeTest {
         assertTrue(collectedEdges.isEmpty());
     }
 
-    /**
-     * Test method for {@link Edge#attach()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testAttach()
-            throws GraphLogicException {
+    public void testAttach() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
 
@@ -44,24 +36,14 @@ public class DirectEdgeTest {
         assertTrue(n.getIncomingEdges().contains(e));
     }
 
-    /**
-     * Test method for {@link Edge#attach()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testAttachWithNulls()
-            throws GraphLogicException {
+    public void testAttachWithNulls() throws GraphLogicException {
         DirectEdgeExampleImpl e = new DirectEdgeExampleImpl(null, null);
         assertFalse(e.attach());
     }
 
-    /**
-     * Test method for {@link Edge#detach()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testDetach()
-            throws GraphLogicException {
+    public void testDetach() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
 
@@ -73,20 +55,12 @@ public class DirectEdgeTest {
         assertTrue(n.getIncomingEdges().isEmpty());
     }
 
-    /**
-     * Test method for {@link Edge#detach()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testDetachWithNulls()
-            throws GraphLogicException {
+    public void testDetachWithNulls() throws GraphLogicException {
         DirectEdgeExampleImpl e = new DirectEdgeExampleImpl(null, null);
         assertFalse(e.detach());
     }
 
-    /**
-     * Test method for {@link Edge#collectAttachedEdges()}.
-     */
     @Test
     public void testCollectAttachedEdgesWithImplicits() {
         NodeExample m = new NodeExample();

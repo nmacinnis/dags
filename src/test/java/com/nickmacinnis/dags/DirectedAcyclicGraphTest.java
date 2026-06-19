@@ -1,13 +1,14 @@
 package com.nickmacinnis.dags;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.nickmacinnis.dags.example.DirectEdgeExampleImpl;
 import com.nickmacinnis.dags.example.DirectedAcyclicGraphExampleImpl;
@@ -18,22 +19,13 @@ import com.nickmacinnis.dags.example.NodeExample;
 public class DirectedAcyclicGraphTest {
     DirectedAcyclicGraphExampleImpl r;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp()
-            throws Exception {
+    @BeforeEach
+    public void setUp() {
         r = new DirectedAcyclicGraphExampleImpl();
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testAddChild()
-            throws GraphLogicException {
+    public void testAddChild() throws GraphLogicException {
         NodeExample n = new NodeExample();
 
         assertTrue(r.addChild(n));
@@ -49,13 +41,8 @@ public class DirectedAcyclicGraphTest {
         assertEquals(1, r.getEdgeCount());
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testAddDirectEdgeImplTwice()
-            throws GraphLogicException {
+    public void testAddDirectEdgeImplTwice() throws GraphLogicException {
         NodeExample n = new NodeExample();
 
         assertTrue(r.addChild(n));
@@ -72,13 +59,8 @@ public class DirectedAcyclicGraphTest {
         assertEquals(1, r.getEdgeCount());
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testAddDirectEdgeImplWithTwoDirectEdges()
-            throws GraphLogicException {
+    public void testAddDirectEdgeImplWithTwoDirectEdges() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
 
@@ -106,13 +88,8 @@ public class DirectedAcyclicGraphTest {
         assertEquals(3, r.getEdgeCount());
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testAddDirectEdgeImplWithThreeDirectEdgesFrontToBack()
-            throws GraphLogicException {
+    public void testAddDirectEdgeImplWithThreeDirectEdgesFrontToBack() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -155,13 +132,8 @@ public class DirectedAcyclicGraphTest {
         assertEquals(6, r.getEdgeCount());
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testAddDirectEdgeImplWithThreeDirectEdgesBackToFront()
-            throws GraphLogicException {
+    public void testAddDirectEdgeImplWithThreeDirectEdgesBackToFront() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -204,13 +176,8 @@ public class DirectedAcyclicGraphTest {
         assertEquals(6, r.getEdgeCount());
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testAddDirectEdgeImplWithThreeDirectEdgesMiddleFrontBack()
-            throws GraphLogicException {
+    public void testAddDirectEdgeImplWithThreeDirectEdgesMiddleFrontBack() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -253,13 +220,8 @@ public class DirectedAcyclicGraphTest {
         assertEquals(6, r.getEdgeCount());
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testAddDirectEdgeImplWithThreeDirectEdgesFrontBackMiddle()
-            throws GraphLogicException {
+    public void testAddDirectEdgeImplWithThreeDirectEdgesFrontBackMiddle() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -302,13 +264,8 @@ public class DirectedAcyclicGraphTest {
         assertEquals(6, r.getEdgeCount());
     }
 
-    /**
-     * Test method for {@link AbstractNode#removeChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testRemoveChild()
-            throws GraphLogicException {
+    public void testRemoveChild() throws GraphLogicException {
         NodeExample n = new NodeExample();
 
         r.addChild(n);
@@ -321,13 +278,8 @@ public class DirectedAcyclicGraphTest {
         assertEquals(0, r.getEdgeCount());
     }
 
-    /**
-     * Test method for {@link AbstractNode#removeChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testRemoveChildWithImplicitEdgeImpl()
-            throws GraphLogicException {
+    public void testRemoveChildWithImplicitEdgeImpl() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
 
@@ -349,13 +301,8 @@ public class DirectedAcyclicGraphTest {
         assertEquals(0, r.getEdgeCount());
     }
 
-    /**
-     * Test method for {@link AbstractNode#removeChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testRemoveChildStillReachableWithImplicitEdgeImpl()
-            throws GraphLogicException {
+    public void testRemoveChildStillReachableWithImplicitEdgeImpl() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
 
@@ -386,34 +333,19 @@ public class DirectedAcyclicGraphTest {
         assertEquals(3, r.getEdgeCount());
     }
 
-    /**
-     * Test method for {@link AbstractNode#removeChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testRemoveChildWithNonAddedEdgeImpl()
-            throws GraphLogicException {
+    public void testRemoveChildWithNonAddedEdgeImpl() throws GraphLogicException {
         NodeExample n = new NodeExample();
         assertFalse(r.removeChild(n));
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
-    @Test(expected = GraphLogicException.class)
-    public void testAddDirectEdgeImplToNullEndNodeImpl()
-            throws GraphLogicException {
-        r.addChild(null);
+    @Test
+    public void testAddDirectEdgeImplToNullEndNodeImpl() {
+        assertThrows(GraphLogicException.class, () -> r.addChild(null));
     }
 
-    /**
-     * Test method for {@link DirectedAcyclicGraph#iterator()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testGraphTraversalOrder()
-            throws GraphLogicException {
+    public void testGraphTraversalOrder() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -432,13 +364,8 @@ public class DirectedAcyclicGraphTest {
         assertFalse(iterator.hasNext());
     }
 
-    /**
-     * Test method for {@link DirectedAcyclicGraph#calculateNodeCoordinates()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testCalculateNodeCoordinates()
-            throws GraphLogicException {
+    public void testCalculateNodeCoordinates() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -461,16 +388,10 @@ public class DirectedAcyclicGraphTest {
 
         assertEquals(1.0, p.getY(), .01);
         assertEquals(0.5, p.getX(), .01);
-
     }
 
-    /**
-     * Test method for {@link DirectedAcyclicGraph#calculateNodeCoordinates()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testCalculateNodeCoordinatesWithRootPassthrough()
-            throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWithRootPassthrough() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -494,16 +415,10 @@ public class DirectedAcyclicGraphTest {
 
         assertEquals(1.0, p.getY(), .01);
         assertEquals(1.0, p.getX(), .01);
-
     }
 
-    /**
-     * Test method for {@link DirectedAcyclicGraph#calculateNodeCoordinates()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testCalculateNodeCoordinatesWith_A_AB_B_Setup()
-            throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWith_A_AB_B_Setup() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -540,13 +455,8 @@ public class DirectedAcyclicGraphTest {
         assertEquals(3.0, s.getX(), .01);
     }
 
-    /**
-     * Test method for {@link DirectedAcyclicGraph#calculateNodeCoordinates()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testCalculateNodeCoordinatesWith_A_BA_B_Setup()
-            throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWith_A_BA_B_Setup() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -583,13 +493,8 @@ public class DirectedAcyclicGraphTest {
         assertEquals(3.0, s.getX(), .01);
     }
 
-    /**
-     * Test method for {@link DirectedAcyclicGraph#calculateNodeCoordinates()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testCalculateNodeCoordinatesWith_G_A_BA_B_H_Setup()
-            throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWith_G_A_BA_B_H_Setup() throws GraphLogicException {
         NodeExample g = new NodeExample();
         NodeExample i = new NodeExample();
         NodeExample n = new NodeExample();
@@ -647,13 +552,8 @@ public class DirectedAcyclicGraphTest {
         assertEquals(5.0, j.getX(), .01);
     }
 
-    /**
-     * Test method for {@link DirectedAcyclicGraph#calculateNodeCoordinates()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testCalculateNodeCoordinatesWith_1_3_2_Setup()
-            throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWith_1_3_2_Setup() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -692,13 +592,8 @@ public class DirectedAcyclicGraphTest {
         assertEquals(2.5, s.getX(), .01);
     }
 
-    /**
-     * Test method for {@link DirectedAcyclicGraph#calculateNodeCoordinates()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testCalculateNodeCoordinatesWith_1_3_3_Setup()
-            throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWith_1_3_3_Setup() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -742,13 +637,8 @@ public class DirectedAcyclicGraphTest {
         assertEquals(4.0, t.getX(), .01);
     }
 
-    /**
-     * Test method for {@link DirectedAcyclicGraph#calculateNodeCoordinates()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testCalculateNodeCoordinatesWith_1_2_2_2_Setup()
-            throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWith_1_2_2_2_Setup() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -789,14 +679,8 @@ public class DirectedAcyclicGraphTest {
         assertEquals(1.0, t.getX(), .01);
     }
 
-    /**
-     * Test method for {@link DirectedAcyclicGraph#clone()}.
-     * @throws GraphLogicException
-     * @throws CloneNotSupportedException
-     */
     @Test
-    public void testClone()
-            throws GraphLogicException, CloneNotSupportedException {
+    public void testClone() throws GraphLogicException, CloneNotSupportedException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
 
@@ -810,18 +694,11 @@ public class DirectedAcyclicGraphTest {
         assertTrue(!rClone.collectChildren().contains(o));
     }
 
-    /**
-     * Test method for {@link DirectedAcyclicGraph#calculateNodeCoordinates()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testCalculateNodeCoordinatesWithCollision()
-            throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWithCollision() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
-
         NodeExample p = new NodeExample();
-
         NodeExample q = new NodeExample();
         NodeExample s = new NodeExample();
 
@@ -854,16 +731,10 @@ public class DirectedAcyclicGraphTest {
         assertEquals(2.0, s.getX(), .01);
     }
 
-    /**
-     * Test method for {@link DirectedAcyclicGraph#calculateNodeCoordinates()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testCalculateNodeCoordinatesWithOverlap()
-            throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWithOverlap() throws GraphLogicException {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
-
         NodeExample p = new NodeExample();
         NodeExample q = new NodeExample();
         NodeExample s = new NodeExample();

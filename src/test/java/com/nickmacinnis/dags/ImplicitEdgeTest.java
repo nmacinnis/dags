@@ -1,14 +1,12 @@
 package com.nickmacinnis.dags;
 
-import static org.junit.Assert.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.nickmacinnis.dags.example.DirectEdgeExampleImpl;
 import com.nickmacinnis.dags.example.EdgeExample;
@@ -17,13 +15,8 @@ import com.nickmacinnis.dags.example.NodeExample;
 
 public class ImplicitEdgeTest {
 
-    /**
-     * Test method for {@link ImplicitEdge#attach()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testAttach()
-            throws GraphLogicException {
+    public void testAttach() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -55,14 +48,8 @@ public class ImplicitEdgeTest {
         assertTrue(g.getOutgoingImplicitEdges().isEmpty());
     }
 
-    /**
-     * Test method for {@link ImplicitEdge#detach()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testDetach()
-            throws GraphLogicException {
-
+    public void testDetach() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -85,13 +72,8 @@ public class ImplicitEdgeTest {
         assertTrue(g.getIncomingImplicitEdges().isEmpty());
     }
 
-    /**
-     * Test method for {@link ImplicitEdge#detach()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testDetachImplicitEdges()
-            throws GraphLogicException {
+    public void testDetachImplicitEdges() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -120,9 +102,6 @@ public class ImplicitEdgeTest {
         assertTrue(p.getIncomingEdges().contains(g));
     }
 
-    /**
-     * Test method for {@link Edge#collectAttachedEdges()}.
-     */
     @Test
     public void testCollectAttachedEdgesWithImplicits() {
         NodeExample m = new NodeExample();

@@ -1,27 +1,24 @@
 package com.nickmacinnis.dags;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.nickmacinnis.dags.example.DirectEdgeExampleImpl;
 import com.nickmacinnis.dags.example.ImplicitEdgeExampleImpl;
 import com.nickmacinnis.dags.example.NodeExample;
 
 public class AbstractNodeTest {
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
+
     @Test
-    public void testAddChild()
-            throws GraphLogicException {
+    public void testAddChild() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
 
@@ -35,13 +32,8 @@ public class AbstractNodeTest {
         assertTrue(n.getIncomingEdges().contains(e));
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testAddChildTwice()
-            throws GraphLogicException {
+    public void testAddChildTwice() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
 
@@ -56,38 +48,23 @@ public class AbstractNodeTest {
         assertTrue(n.getIncomingEdges().contains(e));
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
-    @Test(expected = GraphLogicException.class)
-    public void testAddChildDirectEdgeImplCycle()
-            throws GraphLogicException {
+    @Test
+    public void testAddChildDirectEdgeImplCycle() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         m.addChild(n);
 
-        n.addChild(m);
+        assertThrows(GraphLogicException.class, () -> n.addChild(m));
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
-    @Test(expected = GraphLogicException.class)
-    public void testAddChildSelfReferentCycle()
-            throws GraphLogicException {
-        NodeExample m = new NodeExample();
-        m.addChild(m);
-    }
-
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testAddChildWithTwoDirectEdges()
-            throws GraphLogicException {
+    public void testAddChildSelfReferentCycle() {
+        NodeExample m = new NodeExample();
+        assertThrows(GraphLogicException.class, () -> m.addChild(m));
+    }
+
+    @Test
+    public void testAddChildWithTwoDirectEdges() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -113,29 +90,20 @@ public class AbstractNodeTest {
         assertTrue(o.getIncomingEdges().contains(g));
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
-    @Test(expected = GraphLogicException.class)
-    public void testAddChildWithImplicitEdgeImplCycle()
-            throws GraphLogicException {
+    @Test
+    public void testAddChildWithImplicitEdgeImplCycle() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
 
         m.addChild(n);
         n.addChild(o);
-        o.addChild(m);
+
+        assertThrows(GraphLogicException.class, () -> o.addChild(m));
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testAddChildWithThreeDirectEdgesFrontToBack()
-            throws GraphLogicException {
+    public void testAddChildWithThreeDirectEdgesFrontToBack() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -176,13 +144,8 @@ public class AbstractNodeTest {
         assertTrue(p.getIncomingEdges().contains(j));
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testAddChildWithThreeDirectEdgesBackToFront()
-            throws GraphLogicException {
+    public void testAddChildWithThreeDirectEdgesBackToFront() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -223,13 +186,8 @@ public class AbstractNodeTest {
         assertTrue(p.getIncomingEdges().contains(j));
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testAddChildWithThreeDirectEdgesMiddleFrontBack()
-            throws GraphLogicException {
+    public void testAddChildWithThreeDirectEdgesMiddleFrontBack() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -270,13 +228,8 @@ public class AbstractNodeTest {
         assertTrue(p.getIncomingEdges().contains(j));
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testAddChildWithThreeDirectEdgesFrontBackMiddle()
-            throws GraphLogicException {
+    public void testAddChildWithThreeDirectEdgesFrontBackMiddle() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -317,30 +270,19 @@ public class AbstractNodeTest {
         assertTrue(p.getIncomingEdges().contains(j));
     }
 
-    /**
-     * Test method for {@link AbstractNode#removeChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testRemoveChild()
-            throws GraphLogicException {
+    public void testRemoveChild() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
 
         m.addChild(n);
 
         assertTrue(m.removeChild(n));
-
         assertEquals(0, m.getOutgoingEdges().size());
     }
 
-    /**
-     * Test method for {@link AbstractNode#removeChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testRemoveChildWithImplicitEdgeImpl()
-            throws GraphLogicException {
+    public void testRemoveChildWithImplicitEdgeImpl() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -360,58 +302,35 @@ public class AbstractNodeTest {
         assertTrue(o.getIncomingEdges().contains(e));
     }
 
-    /**
-     * Test method for {@link AbstractNode#removeChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testRemoveChildWithNonAddedEdgeImpl()
-            throws GraphLogicException {
+    public void testRemoveChildWithNonAddedEdgeImpl() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         assertFalse(m.removeChild(n));
     }
 
-    /**
-     * Test method for {@link AbstractNode#addChild(AbstractNode)}.
-     * @throws GraphLogicException
-     */
-    @Test(expected = GraphLogicException.class)
-    public void testAddDirectEdgeImplToNullEndNodeImpl()
-            throws GraphLogicException {
+    @Test
+    public void testAddDirectEdgeImplToNullEndNodeImpl() {
         NodeExample m = new NodeExample();
-        m.addChild(null);
+        assertThrows(GraphLogicException.class, () -> m.addChild(null));
     }
 
-    /**
-     * Test method for {@link AbstractNode#isOrphaned()}.
-     */
     @Test
     public void testIsOrphaned() {
         NodeExample m = new NodeExample();
         assertTrue(m.isOrphaned());
     }
 
-    /**
-     * Test method for {@link AbstractNode#isOrphaned()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testIsOrphanedOnChild()
-            throws GraphLogicException {
+    public void testIsOrphanedOnChild() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         m.addChild(n);
         assertFalse(n.isOrphaned());
     }
 
-    /**
-     * Test method for {@link AbstractNode#collectChildren()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testCollectChildren()
-            throws GraphLogicException {
+    public void testCollectChildren() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -429,13 +348,8 @@ public class AbstractNodeTest {
         assertTrue(collectedChildren.contains(p));
     }
 
-    /**
-     * Test method for {@link AbstractNode#listChildren()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testListChildren()
-            throws GraphLogicException {
+    public void testListChildren() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -455,13 +369,8 @@ public class AbstractNodeTest {
         assertFalse(iterator.hasNext());
     }
 
-    /**
-     * Test method for {@link AbstractNode#collectDirectEdges()}.
-     * @throws GraphLogicException
-     */
     @Test
-    public void testCollectDirectEdges()
-            throws GraphLogicException {
+    public void testCollectDirectEdges() throws GraphLogicException {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
