@@ -5,6 +5,7 @@
 ```bash
 mvn compile          # compile only
 mvn test             # compile + run all tests
+mvn verify           # compile + test + SpotBugs static analysis
 mvn test -pl .       # same, explicit project root
 ```
 
@@ -24,26 +25,41 @@ When a direct edge A → B is added:
 
 When a direct edge is detached, all implicit edges that depend on it cascade-detach recursively via `collectAttachedEdges()`. Each implicit edge tracks three references: `entryEdge`, `directEdge`, `exitEdge` — used for both routing and cascade management.
 
+**CME hazard**: `AbstractEdge.detach()` iterates its implicit edge sets while detaching elements. Detaching an implicit edge calls back into `detachOutgoingEdge`/`detachIncomingEdge`/`detachDependentEdge`, which mutates the live set. Always copy the set before iterating — `new LinkedHashSet<>(outgoingImplicitEdges)` etc.
+
 ### Self-referential generics
 
 Every class uses the pattern `N extends Node<N, E>, E extends Edge<N, E>`. This forces concrete implementations to specify their own type. Do not try to simplify this — it is what makes `getThis()` and `buildDirectEdge()` type-safe at the concrete level.
 
+`AbstractNode` and `AbstractEdge` provide a concrete `getThis()` using an `@SuppressWarnings("unchecked")` cast — safe by construction due to the generic constraint. Concrete subclasses do **not** need to override `getThis()`.
+
 Concrete implementations must override:
-- `getThis()` — returns `this` cast to `N`
 - `buildDirectEdge(N, N)` — factory for direct edges
 - `buildImplicitEdge(N, N, E, E, E, int)` — factory for implicit edges
-- `clone()` — shallow clone of just the node (edges are rebuilt by the graph)
+- `copy()` — returns a new empty node of the same concrete type (edges are rebuilt by the graph)
 - `constructThis()` (on `DirectedAcyclicGraph`) — factory for a new empty graph of the same type
 
 ### Class responsibilities
 
 | Class | Responsibility |
 |---|---|
-| `AbstractNode` | Adds/removes edges, cycle detection, implicit edge generation, DFT/grid traversal |
-| `AbstractEdge` | Tracks `incoming/outgoing/dependent` implicit edges; attach/detach lifecycle |
-| `DirectEdge` | Hops = 0; entry/direct/exit all point to self |
-| `ImplicitEdge` | Hops > 0; attach/detach also registers with entry/exit/direct edges |
-| `DirectedAcyclicGraph` | Root container; Graham-Coffman layout; clone; removeNode cascade |
+| `AbstractNode` | Adds/removes edges, cycle detection, implicit edge generation, DFT/BFT/grid traversal |
+| `AbstractEdge` | Tracks `incoming/outgoing/dependent` implicit edges; attach/detach lifecycle; sealed base |
+| `DirectEdge` | Hops = 0; entry/direct/exit all point to self; `non-sealed` |
+| `ImplicitEdge` | Hops > 0; attach/detach also registers with entry/exit/direct edges; `non-sealed` |
+| `DirectedAcyclicGraph` | Root container; Graham-Coffman layout; copy; removeNode cascade |
+
+### Exception model
+
+`GraphLogicException` extends `RuntimeException` (unchecked). It is thrown when:
+- An edge would create a cycle
+- An edge points to a null end node
+
+No method needs `throws GraphLogicException` in its signature.
+
+### Sealed hierarchy
+
+`AbstractEdge` is `sealed ... permits DirectEdge, ImplicitEdge`. Both subclasses are `non-sealed` to allow user extension. Use `instanceof DirectEdge<?, ?>` (with wildcards) rather than pattern-matching on the sealed type.
 
 ### Cycle detection
 
@@ -70,4 +86,5 @@ Implicit edge addition does not re-check cycles because the invariant is maintai
 - `Objects.equals()` / `Objects.hash()` in `equals()`/`hashCode()` implementations
 - Anonymous `Comparator` classes → lambdas
 - JUnit 5 (`@Test` from `org.junit.jupiter.api`; `assertThrows` for expected exceptions)
-- Tests that set up a graph state before triggering an exception keep `throws GraphLogicException` on the method signature; only the line expected to throw goes inside `assertThrows`
+- No `throws` declarations on test methods — `GraphLogicException` is unchecked
+- SpotBugs exclusions live in `spotbugs-exclude.xml`; only exclude with documented justification
