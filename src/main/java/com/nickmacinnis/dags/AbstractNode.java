@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 
@@ -42,22 +43,14 @@ public abstract class AbstractNode<N extends Node<N, E>, E extends Edge<N, E>> i
         this.y = y;
     }
 
-    /**
-     * Add the edge to the graph.
-     * If the edge's start node is null, the edge will be added to the root node.
-     * Implicit edges are added to the graph as necessary.
-     * @param edge The edge to be added.
-     * @return false if the graph already contained the edge; otherwise true.
-     * @throws GraphLogicException if the edge would create a cycle or if the end node is null.
-     */
     @Override
-    public boolean addChild(N endNode) throws GraphLogicException {
+    public boolean addChild(N endNode) {
         E edge = buildDirectEdge(getThis(), endNode);
         return addDirectEdge(edge);
     }
 
     @Override
-    public boolean addDirectEdge(E edge) throws GraphLogicException {
+    public boolean addDirectEdge(E edge) {
         N endNode = edge.getEndNode();
 
         if (endNode == null) {
@@ -97,49 +90,41 @@ public abstract class AbstractNode<N extends Node<N, E>, E extends Edge<N, E>> i
         return true;
     }
 
-    /** @return this */
-    protected abstract N getThis();
+    /**
+     * Returns this node typed as N.
+     * Safe by construction: the self-referential constraint (N extends Node<N, E>) guarantees
+     * that any class extending AbstractNode<N, E> is N.
+     */
+    @SuppressWarnings("unchecked")
+    protected N getThis() {
+        return (N) this;
+    }
 
-    /** @return A DirectEdge from startNode to endNode */
+    /** @return a DirectEdge from startNode to endNode */
     protected abstract E buildDirectEdge(N startNode, N endNode);
 
-    /** @return An ImplicitEdge from startNode to endNode */
+    /** @return an ImplicitEdge from startNode to endNode */
     protected abstract E buildImplicitEdge(N startNode, N endNode, E entryEdge, E directEdge, E exitEdge, int hops);
 
-    /**
-     * Add the direct edge to the graph.
-     * The edge is added to the start and end nodes' collection of incoming/outgoing edges.
-     * @return True if the graph did not contain the edge.
-     */
-    protected boolean addEdge(Edge<N, E> edge) throws GraphLogicException {
+    protected boolean addEdge(Edge<N, E> edge) {
         return edge.attach();
     }
 
-    /**
-     * Remove a child node. It is possible to orphan nodes by calling this method.
-     * @return false if the node was not a child of this node; true otherwise.
-     */
     @Override
     public boolean removeChild(N endNode) {
-        Edge<N, E> edge = buildDirectEdge(getThis(), endNode);
+        E edge = buildDirectEdge(getThis(), endNode);
         if (!outgoingEdges.contains(edge)) {
             return false;
         }
-        Edge<N, E> actualEdge = findActual(edge, outgoingEdges);
+        E actualEdge = findActual(edge, outgoingEdges).orElseThrow();
         return actualEdge.detach();
     }
 
-    /**
-     * @return true if this node has no incoming edges; otherwise false
-     */
     @Override
     public boolean isOrphaned() {
         return incomingEdges.isEmpty();
     }
 
-    /**
-     * @return The set of all nodes which can be reached directly or transitively via this node's outgoing edges
-     */
     @Override
     public Set<N> collectChildren() {
         Set<N> children = new LinkedHashSet<>();
@@ -171,9 +156,6 @@ public abstract class AbstractNode<N extends Node<N, E>, E extends Edge<N, E>> i
         return edges;
     }
 
-    /**
-     * @return The list of all nodes which can be reached directly or transitively via this node's outgoing edges
-     */
     @Override
     public List<N> listChildren() {
         List<N> children = new ArrayList<>();
@@ -196,7 +178,24 @@ public abstract class AbstractNode<N extends Node<N, E>, E extends Edge<N, E>> i
     }
 
     @Override
-    public boolean addIncomingEdge(E edge) throws GraphLogicException {
+    public List<N> bft() {
+        List<N> result = new ArrayList<>();
+        Queue<N> queue = new ArrayDeque<>();
+        queue.add(getThis());
+        while (!queue.isEmpty()) {
+            N current = queue.poll();
+            result.add(current);
+            for (E edge : current.getOutgoingEdges()) {
+                if (edge instanceof DirectEdge<?, ?>) {
+                    queue.add(edge.getEndNode());
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public boolean addIncomingEdge(E edge) {
         return incomingEdges.add(edge);
     }
 
@@ -225,15 +224,10 @@ public abstract class AbstractNode<N extends Node<N, E>, E extends Edge<N, E>> i
         return outgoingEdges;
     }
 
-    /**
-     * Find the element in the list which matches the object
-     * @return The object which equals matchingObject, or null
-     */
-    private <T> T findActual(T matchingObject, List<? extends T> list) {
+    private <T> Optional<T> findActual(T matchingObject, List<T> list) {
         return list.stream()
                 .filter(t -> t.equals(matchingObject))
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
     @Override
@@ -277,22 +271,5 @@ public abstract class AbstractNode<N extends Node<N, E>, E extends Edge<N, E>> i
     }
 
     @Override
-    public List<N> bft() {
-        List<N> result = new ArrayList<>();
-        Queue<N> queue = new ArrayDeque<>();
-        queue.add(getThis());
-        while (!queue.isEmpty()) {
-            N current = queue.poll();
-            result.add(current);
-            for (E edge : current.getOutgoingEdges()) {
-                if (edge instanceof DirectEdge<?, ?>) {
-                    queue.add(edge.getEndNode());
-                }
-            }
-        }
-        return result;
-    }
-
-    @Override
-    public abstract N clone() throws CloneNotSupportedException;
+    public abstract N copy();
 }

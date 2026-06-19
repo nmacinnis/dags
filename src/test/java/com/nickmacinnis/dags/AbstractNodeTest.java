@@ -18,7 +18,7 @@ import com.nickmacinnis.dags.example.NodeExample;
 public class AbstractNodeTest {
 
     @Test
-    public void testAddChild() throws GraphLogicException {
+    public void testAddChild() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
 
@@ -33,7 +33,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testAddChildTwice() throws GraphLogicException {
+    public void testAddChildTwice() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
 
@@ -49,7 +49,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testAddChildDirectEdgeImplCycle() throws GraphLogicException {
+    public void testAddChildDirectEdgeImplCycle() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         m.addChild(n);
@@ -64,7 +64,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testAddChildWithTwoDirectEdges() throws GraphLogicException {
+    public void testAddChildWithTwoDirectEdges() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -91,7 +91,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testAddChildWithImplicitEdgeImplCycle() throws GraphLogicException {
+    public void testAddChildWithImplicitEdgeImplCycle() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -103,7 +103,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testAddChildWithThreeDirectEdgesFrontToBack() throws GraphLogicException {
+    public void testAddChildWithThreeDirectEdgesFrontToBack() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -145,7 +145,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testAddChildWithThreeDirectEdgesBackToFront() throws GraphLogicException {
+    public void testAddChildWithThreeDirectEdgesBackToFront() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -187,7 +187,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testAddChildWithThreeDirectEdgesMiddleFrontBack() throws GraphLogicException {
+    public void testAddChildWithThreeDirectEdgesMiddleFrontBack() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -229,7 +229,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testAddChildWithThreeDirectEdgesFrontBackMiddle() throws GraphLogicException {
+    public void testAddChildWithThreeDirectEdgesFrontBackMiddle() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -271,7 +271,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testRemoveChild() throws GraphLogicException {
+    public void testRemoveChild() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
 
@@ -282,7 +282,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testRemoveChildWithImplicitEdgeImpl() throws GraphLogicException {
+    public void testRemoveChildWithImplicitEdgeImpl() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -303,7 +303,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testRemoveChildWithNonAddedEdgeImpl() throws GraphLogicException {
+    public void testRemoveChildWithNonAddedEdgeImpl() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         assertFalse(m.removeChild(n));
@@ -322,7 +322,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testIsOrphanedOnChild() throws GraphLogicException {
+    public void testIsOrphanedOnChild() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         m.addChild(n);
@@ -330,7 +330,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testCollectChildren() throws GraphLogicException {
+    public void testCollectChildren() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -349,7 +349,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testListChildren() throws GraphLogicException {
+    public void testListChildren() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -370,7 +370,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testBft() throws GraphLogicException {
+    public void testBft() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -390,7 +390,7 @@ public class AbstractNodeTest {
     }
 
     @Test
-    public void testCollectDirectEdges() throws GraphLogicException {
+    public void testCollectDirectEdges() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();

@@ -25,7 +25,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testAddChild() throws GraphLogicException {
+    public void testAddChild() {
         NodeExample n = new NodeExample();
 
         assertTrue(r.addChild(n));
@@ -42,7 +42,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testAddDirectEdgeImplTwice() throws GraphLogicException {
+    public void testAddDirectEdgeImplTwice() {
         NodeExample n = new NodeExample();
 
         assertTrue(r.addChild(n));
@@ -60,7 +60,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testAddDirectEdgeImplWithTwoDirectEdges() throws GraphLogicException {
+    public void testAddDirectEdgeImplWithTwoDirectEdges() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
 
@@ -89,7 +89,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testAddDirectEdgeImplWithThreeDirectEdgesFrontToBack() throws GraphLogicException {
+    public void testAddDirectEdgeImplWithThreeDirectEdgesFrontToBack() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -133,7 +133,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testAddDirectEdgeImplWithThreeDirectEdgesBackToFront() throws GraphLogicException {
+    public void testAddDirectEdgeImplWithThreeDirectEdgesBackToFront() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -177,7 +177,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testAddDirectEdgeImplWithThreeDirectEdgesMiddleFrontBack() throws GraphLogicException {
+    public void testAddDirectEdgeImplWithThreeDirectEdgesMiddleFrontBack() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -221,7 +221,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testAddDirectEdgeImplWithThreeDirectEdgesFrontBackMiddle() throws GraphLogicException {
+    public void testAddDirectEdgeImplWithThreeDirectEdgesFrontBackMiddle() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -265,7 +265,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testRemoveChild() throws GraphLogicException {
+    public void testRemoveChild() {
         NodeExample n = new NodeExample();
 
         r.addChild(n);
@@ -279,7 +279,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testRemoveChildWithImplicitEdgeImpl() throws GraphLogicException {
+    public void testRemoveChildWithImplicitEdgeImpl() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
 
@@ -302,7 +302,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testRemoveChildStillReachableWithImplicitEdgeImpl() throws GraphLogicException {
+    public void testRemoveChildStillReachableWithImplicitEdgeImpl() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
 
@@ -334,7 +334,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testRemoveChildWithNonAddedEdgeImpl() throws GraphLogicException {
+    public void testRemoveChildWithNonAddedEdgeImpl() {
         NodeExample n = new NodeExample();
         assertFalse(r.removeChild(n));
     }
@@ -345,7 +345,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testGraphTraversalOrder() throws GraphLogicException {
+    public void testGraphTraversalOrder() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -365,7 +365,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testCalculateNodeCoordinates() throws GraphLogicException {
+    public void testCalculateNodeCoordinates() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -391,7 +391,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testCalculateNodeCoordinatesWithRootPassthrough() throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWithRootPassthrough() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -418,7 +418,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testCalculateNodeCoordinatesWith_A_AB_B_Setup() throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWith_A_AB_B_Setup() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -456,7 +456,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testCalculateNodeCoordinatesWith_A_BA_B_Setup() throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWith_A_BA_B_Setup() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -494,7 +494,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testCalculateNodeCoordinatesWith_G_A_BA_B_H_Setup() throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWith_G_A_BA_B_H_Setup() {
         NodeExample g = new NodeExample();
         NodeExample i = new NodeExample();
         NodeExample n = new NodeExample();
@@ -553,7 +553,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testCalculateNodeCoordinatesWith_1_3_2_Setup() throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWith_1_3_2_Setup() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -593,7 +593,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testCalculateNodeCoordinatesWith_1_3_3_Setup() throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWith_1_3_3_Setup() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -638,7 +638,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testCalculateNodeCoordinatesWith_1_2_2_2_Setup() throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWith_1_2_2_2_Setup() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -680,22 +680,22 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testClone() throws GraphLogicException, CloneNotSupportedException {
+    public void testCopy() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
 
         r.addChild(n);
         n.addChild(o);
 
-        DirectedAcyclicGraph<NodeExample, EdgeExample> clone = r.clone();
-        NodeExample rClone = clone.rootNode;
-        assertEquals(2, rClone.getOutgoingEdges().size());
-        assertTrue(!rClone.collectChildren().contains(n));
-        assertTrue(!rClone.collectChildren().contains(o));
+        DirectedAcyclicGraph<NodeExample, EdgeExample> copy = r.copy();
+        NodeExample rootCopy = copy.rootNode;
+        assertEquals(2, rootCopy.getOutgoingEdges().size());
+        assertTrue(!rootCopy.collectChildren().contains(n));
+        assertTrue(!rootCopy.collectChildren().contains(o));
     }
 
     @Test
-    public void testCalculateNodeCoordinatesWithCollision() throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWithCollision() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();
@@ -732,7 +732,7 @@ public class DirectedAcyclicGraphTest {
     }
 
     @Test
-    public void testCalculateNodeCoordinatesWithOverlap() throws GraphLogicException {
+    public void testCalculateNodeCoordinatesWithOverlap() {
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
         NodeExample p = new NodeExample();

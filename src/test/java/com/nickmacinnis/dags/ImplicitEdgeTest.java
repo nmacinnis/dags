@@ -16,7 +16,7 @@ import com.nickmacinnis.dags.example.NodeExample;
 public class ImplicitEdgeTest {
 
     @Test
-    public void testAttach() throws GraphLogicException {
+    public void testAttach() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -49,7 +49,7 @@ public class ImplicitEdgeTest {
     }
 
     @Test
-    public void testDetach() throws GraphLogicException {
+    public void testDetach() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();
@@ -73,7 +73,7 @@ public class ImplicitEdgeTest {
     }
 
     @Test
-    public void testDetachImplicitEdges() throws GraphLogicException {
+    public void testDetachImplicitEdges() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
         NodeExample o = new NodeExample();

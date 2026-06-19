@@ -14,7 +14,7 @@ import java.util.Set;
  * The root node of the graph, which has only outgoing edges.
  * The root node additionally tracks the contents of the graph as a whole.
  */
-public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<N, E>> implements Iterable<N>, Cloneable {
+public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<N, E>> implements Iterable<N> {
     protected N rootNode;
 
     public DirectedAcyclicGraph(N rootNode) {
@@ -25,7 +25,7 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
      * Adds the node as a child of the root node.
      * @return true if addition was successful
      */
-    public boolean addChild(N endNode) throws GraphLogicException {
+    public boolean addChild(N endNode) {
         return rootNode.addChild(endNode);
     }
 
@@ -317,27 +317,22 @@ public abstract class DirectedAcyclicGraph<N extends Node<N, E>, E extends Edge<
     /** @return this */
     protected abstract DirectedAcyclicGraph<N, E> constructThis();
 
-    @Override
-    public DirectedAcyclicGraph<N, E> clone() throws CloneNotSupportedException {
-        DirectedAcyclicGraph<N, E> clone = constructThis();
+    public DirectedAcyclicGraph<N, E> copy() {
+        DirectedAcyclicGraph<N, E> copy = constructThis();
         Set<N> nodes = collectChildren();
-        Map<N, N> clonedNodes = new HashMap<>();
-        clonedNodes.put(rootNode, clone.rootNode);
+        Map<N, N> copiedNodes = new HashMap<>();
+        copiedNodes.put(rootNode, copy.rootNode);
         for (N node : nodes) {
-            clonedNodes.put(node, node.clone());
+            copiedNodes.put(node, node.copy());
         }
         Set<E> edges = collectEdges();
         for (E edge : edges) {
             if (edge instanceof DirectEdge<?, ?>) {
-                N startNode = clonedNodes.get(edge.getStartNode());
-                N endNode = clonedNodes.get(edge.getEndNode());
-                try {
-                    startNode.addChild(endNode);
-                } catch (GraphLogicException e) {
-                    // doubtful
-                }
+                N startNode = copiedNodes.get(edge.getStartNode());
+                N endNode = copiedNodes.get(edge.getEndNode());
+                startNode.addChild(endNode);
             }
         }
-        return clone;
+        return copy;
     }
 }

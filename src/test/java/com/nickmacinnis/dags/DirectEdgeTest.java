@@ -26,7 +26,7 @@ public class DirectEdgeTest {
     }
 
     @Test
-    public void testAttach() throws GraphLogicException {
+    public void testAttach() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
 
@@ -37,13 +37,13 @@ public class DirectEdgeTest {
     }
 
     @Test
-    public void testAttachWithNulls() throws GraphLogicException {
+    public void testAttachWithNulls() {
         DirectEdgeExampleImpl e = new DirectEdgeExampleImpl(null, null);
         assertFalse(e.attach());
     }
 
     @Test
-    public void testDetach() throws GraphLogicException {
+    public void testDetach() {
         NodeExample m = new NodeExample();
         NodeExample n = new NodeExample();
 
@@ -56,7 +56,7 @@ public class DirectEdgeTest {
     }
 
     @Test
-    public void testDetachWithNulls() throws GraphLogicException {
+    public void testDetachWithNulls() {
         DirectEdgeExampleImpl e = new DirectEdgeExampleImpl(null, null);
         assertFalse(e.detach());
     }
